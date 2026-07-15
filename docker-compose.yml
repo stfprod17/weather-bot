@@ -1,0 +1,14 @@
+services:
+
+weather-postgres:
+  image: postgres
+  container_name: weather-postgres
+  ports:
+  - "5432:5432"
+  enviroment:
+  - POSTGRES_PASSWORD=postgres
+  volumes:
+  - weather_postgres_data:/var/lib/postgresql/data 
+
+volumes:
+  weather_postgres_data:
