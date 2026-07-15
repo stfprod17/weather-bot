@@ -79,7 +79,24 @@ func (h *Handler) handleUpdate(update tgbotapi.Update) {
 
 func (h *Handler) handlerSetCity(ctx context.Context, update tgbotapi.Update) {
 	city := update.Message.CommandArguments()
-	err := h.userRepo.UpdateCity(ctx, update.Message.From.ID, city)
+
+	if city == "" {
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Укажите город: /city Москва")
+		msg.ReplyToMessageID = update.Message.MessageID
+		h.bot.Send(msg)
+		return
+	}
+
+	// проверяем что город существует
+	_, err := h.owClient.Coordinates(city)
+	if err != nil {
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Город '%s' не найден. Проверьте название и попробуйте снова", city))
+		msg.ReplyToMessageID = update.Message.MessageID
+		h.bot.Send(msg)
+		return
+	}
+
+	err = h.userRepo.UpdateCity(ctx, update.Message.From.ID, city)
 	if err != nil {
 		log.Println("error userRepo.UpdateCity:", err)
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Произошла ошибка")
@@ -88,10 +105,9 @@ func (h *Handler) handlerSetCity(ctx context.Context, update tgbotapi.Update) {
 		return
 	}
 
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Город %s сохранен", city))
+	msg := tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Город %s сохранен ✅", city))
 	msg.ReplyToMessageID = update.Message.MessageID
 	h.bot.Send(msg)
-
 }
 
 func (h *Handler) handleSendWeather(ctx context.Context, update tgbotapi.Update) {
