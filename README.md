@@ -5,10 +5,10 @@ A Telegram bot for getting current weather in any city around the world. Built w
 
 Bot Commands
 
-1.CommandDescription/startWelcome message 
-2.List of available commands:
-"/city London" - save your city
-"/weather" - current weather in your saved city
+1. CommandDescription/startWelcome message 
+2. List of available commands:
+   "/city London" - save your city
+   "/weather" - current weather in your saved city
 
 
 Tech Stack
